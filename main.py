@@ -128,7 +128,8 @@ async def main():
     @cooldowns.cooldown(1, 3, bucket=InteractionBucket.author)
     async def login(
         interaction: disnake.CommandInteraction,
-        username: str,
+        username: str = commands.Param(description="The username to login as."),
+        base_domain: str = commands.Param(description="The domain to login to."),
         code: str = commands.Param(
             description="The code provided to you by the website your trying to auth to."
         ),
@@ -139,13 +140,14 @@ async def main():
             AQ(
                 AND(
                     HQF(EQ("username_hashed", username)),
+                    HQF(EQ("base_domain_hashed", base_domain)),
                     HQF(EQ("registered_for_hashed", interaction.author.id)),
                 ),
             )
         )
         if not user_model:
             return await interaction.send(
-                "No user exists with this username.", ephemeral=True
+                "No user exists with this username and base domain.", ephemeral=True
             )
 
         async with httpx.AsyncClient() as client:
@@ -203,6 +205,16 @@ async def main():
         )
         usernames = [u.username for u in entries]
         return [v for v in usernames if user_input.lower() in v.lower()]
+
+    @login.autocomplete("base_domain")
+    async def username_autocomplete(
+        interaction: disnake.CommandInteraction, user_input: str
+    ):
+        entries = await user_collection.find_many(
+            AQ(HQF(EQ("registered_for_hashed", interaction.author.id)))
+        )
+        domains = [u.base_domain for u in entries]
+        return [v for v in domains if user_input.lower() in v.lower()]
 
     await bot.start(os.environ.get("TOKEN"))
 
