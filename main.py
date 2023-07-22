@@ -55,6 +55,16 @@ async def main():
 
     @bot.slash_command()
     @cooldowns.cooldown(1, 3, bucket=InteractionBucket.author)
+    async def about(interaction: disnake.CommandInteraction):
+        """Find out more about this bot."""
+        await interaction.send(
+            "I'm a bot that allows for passwordless auth to `skelmis`'s websites.\n\n"
+            "Read more about me here: https://github.com/Skelmis/Passwordless-Auth-Bot",
+            ephemeral=True,
+        )
+
+    @bot.slash_command()
+    @cooldowns.cooldown(1, 3, bucket=InteractionBucket.author)
     async def logins(interaction: disnake.CommandInteraction):
         """View all of your possible logins."""
         user_models = await user_collection.find_many(
