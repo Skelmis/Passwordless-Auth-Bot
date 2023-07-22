@@ -105,9 +105,10 @@ async def main():
             )
             if r_1.status_code != 201:
                 log.info(
-                    "%s(%s) failed to register to %s with error code %s and content %s",
+                    "%s(%s) failed to register %s on %s with error code %s and content %s",
                     interaction.author,
                     interaction.author.id,
+                    username,
                     base_domain,
                     r_1.status_code,
                     r_1.content,
