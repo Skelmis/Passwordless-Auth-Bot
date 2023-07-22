@@ -192,6 +192,8 @@ async def main():
                 )
                 return await interaction.send("Something went wrong.", ephemeral=True)
 
+            await interaction.send("Login successful.", ephemeral=True)
+
     @login.autocomplete("username")
     async def username_autocomplete(
         interaction: disnake.CommandInteraction, user_input: str
