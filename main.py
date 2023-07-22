@@ -55,6 +55,21 @@ async def main():
 
     @bot.slash_command()
     @cooldowns.cooldown(1, 3, bucket=InteractionBucket.author)
+    async def logins(interaction: disnake.CommandInteraction):
+        """View all of your possible logins."""
+        user_models = await user_collection.find_many(
+            AQ(HQF(EQ("registered_for_hashed", interaction.author.id)))
+        )
+        description = "\n".join(
+            f"**{u.base_domain}**: `{u.username}`" for u in user_models
+        )
+        embed = disnake.Embed(
+            title=f"Logins for {interaction.author}", description=description
+        )
+        await interaction.send(embed=embed, ephemeral=True)
+
+    @bot.slash_command()
+    @cooldowns.cooldown(1, 3, bucket=InteractionBucket.author)
     async def register(
         interaction: disnake.CommandInteraction,
         username: str = commands.Param(description="Your username on the site."),
