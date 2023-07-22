@@ -123,7 +123,9 @@ async def main():
                 user.username,
                 user.base_domain,
             )
-            await interaction.send("User created.", ephemeral=True)
+            await interaction.send(
+                "User created, you can now login to the site.", ephemeral=True
+            )
 
     @bot.slash_command()
     @cooldowns.cooldown(1, 3, bucket=InteractionBucket.author)
@@ -195,7 +197,10 @@ async def main():
                 )
                 return await interaction.send("Something went wrong.", ephemeral=True)
 
-            await interaction.send("Login successful.", ephemeral=True)
+            await interaction.send(
+                'Login successful, you click the "Click me" button to access the site.',
+                ephemeral=True,
+            )
 
     @login.autocomplete("username")
     async def username_autocomplete(
